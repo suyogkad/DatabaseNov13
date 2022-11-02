@@ -1,0 +1,150 @@
+INSERT INTO retreat(retreat_id,retreat_name,invoice,follow_up)
+VALUES (1,'squats',invoice_type('Ramakant',200.00,TO_DATE('1989-12-09','YYYY-MM-DD'),TO_DATE('1989-12-09','YYYY-MM-DD')),followUp_type('6:30','5 minutes',TO_DATE('1989-12-09','YYYY-MM-DD')));
+
+INSERT INTO retreat(retreat_id,retreat_name,invoice,follow_up)
+VALUES (112,'push up',invoice_type('Joy',500,TO_DATE('2022-10-02','YYYY-MM-DD'),TO_DATE('2022-11-02','YYYY-MM-DD')),followUp_type('6:30','5 minutes',TO_DATE('2022-10-03','YYYY-MM-DD')));
+
+INSERT INTO retreat(retreat_id,retreat_name,invoice,follow_up)
+VALUES (113,'Abdominal Crunches',invoice_type('Adam Smith',1200,TO_DATE('2022-10-04','YYYY-MM-DD'),TO_DATE('2022-11-05','YYYY-MM-DD')),followUp_type('6:30','10 minutes',TO_DATE('2022-10-05','YYYY-MM-DD')));
+
+INSERT INTO retreat(retreat_id,retreat_name,invoice,follow_up)
+VALUES (114,'squats',invoice_type('Redi Blake',300,TO_DATE('2022-11-02','YYYY-MM-DD'),TO_DATE('2022-12-02','YYYY-MM-DD')),followUp_type('6:30','15 minutes',TO_DATE('2022-11-02','YYYY-MM-DD')));
+
+INSERT INTO retreat(retreat_id,retreat_name,invoice,follow_up)
+VALUES (115,'Burpees',invoice_type('Arush David',300,TO_DATE('2022-10-08','YYYY-MM-DD'),TO_DATE('2022-11-08','YYYY-MM-DD')),followUp_type('6:30','15 minutes',TO_DATE('2022-10-08','YYYY-MM-DD')));
+
+
+
+-- addresses
+
+INSERT INTO addresses (street, city, country)
+VALUES ('BANEPA ROAD', 'BANEPA', 'NEPAL');
+
+INSERT INTO addresses (street, city, country)
+VALUES ('PANAUTI ROAD', 'PANAUTI', 'NEPAL');
+
+INSERT INTO addresses (street, city, country)
+VALUES ('114 CHABHAIL ROAD', 'KATHMANDU', 'NEPAL');
+
+INSERT INTO addresses (street, city, country)
+VALUES ('165 PRAKSHPUR', 'JHAPA', 'NEPAL');
+
+INSERT INTO addresses (street, city, country)
+VALUES ('93 DEVKOTA STREET', 'BIRATNAGAR', 'NEPAL');
+
+-- addded address
+
+INSERT INTO addresses (street, city, country)
+VALUES ('BIHAR ROAD', 'BIHAR', 'INDIA');
+
+INSERT INTO addresses (street, city, country)
+VALUES ('KANPUR ROAD', 'KANPUR', 'INDIA');
+
+
+
+-- settings
+
+INSERT INTO settings(setting_id,setting_name)
+VALUES(45,'WOODLAND');
+
+UPDATE settings SET address = 
+(select ref(a) FROM addresses a
+WHERE a.street=' 114 CHABHAIL ROAD')
+WHERE setting_id =45;
+
+
+INSERT INTO settings(setting_id,setting_name)
+VALUES(47,'LAKESIDE');
+
+UPDATE settings SET address = 
+(select ref(a) FROM addresses a
+WHERE a.street='93 DEVKOTA STREET')
+WHERE setting_id =47;
+
+INSERT INTO settings(setting_id,setting_name)
+VALUES(48,'COSTAL');
+
+UPDATE settings SET address = 
+(select ref(a) FROM addresses a
+WHERE a.street='165 PRAKSHPUR')
+WHERE setting_id =48;
+
+INSERT INTO settings(setting_id,setting_name)
+VALUES(49,'WINTER WONDERLAND');
+
+UPDATE settings SET address = 
+(select ref(a) FROM addresses a
+WHERE a.street='BANEPA ROAD')
+WHERE setting_id =49;
+
+INSERT INTO settings(setting_id,setting_name)
+VALUES(50,'PLANETARY LEY LINES');
+
+UPDATE settings SET address = 
+(select ref(a) FROM addresses a
+WHERE a.street='PANAUTI ROAD')
+WHERE setting_id =50;
+
+
+-- retreat settings
+
+INSERT INTO retreat_settings(retreat_setting_id,setting_id,retreat_id )
+VALUES(1,45,1);
+
+INSERT INTO retreat_settings(retreat_setting_id,setting_id,retreat_id )
+VALUES(2,47,112);
+
+INSERT INTO retreat_settings(retreat_setting_id,setting_id,retreat_id )
+VALUES(3,48,113);
+
+INSERT INTO retreat_settings(retreat_setting_id,setting_id,retreat_id )
+VALUES(4,49,114);
+
+INSERT INTO retreat_settings(retreat_setting_id,setting_id,retreat_id )
+VALUES(5,50,115);
+
+
+-- accomondation style
+
+INSERT INTO accomodation_style(accomodation_style_id, accomodation_style_name)
+VALUES(10,'LUXUARY');
+
+INSERT INTO accomodation_style(accomodation_style_id, accomodation_style_name)
+VALUES(11,'TREEHOUSE');
+
+INSERT INTO accomodation_style(accomodation_style_id, accomodation_style_name)
+VALUES(12,'CABIN');
+
+INSERT INTO accomodation_style(accomodation_style_id,accomodation_style_name )
+VALUES(13,'TEEPEE');
+
+INSERT INTO accomodation_style(accomodation_style_id,accomodation_style_name )
+VALUES(14,'RUSTIC');
+
+
+-- accomodation
+
+INSERT INTO accomodation (accomodation_id,accomodation_name,room,no_of_room,description,accomodation_style_id) 
+VALUES(1,'SOLTI',
+room_varray_type(room_type(101,6,'WELL ORGANIZED'),
+room_type(102,8,'ORGANIZED NICELY'),
+room_type(103,35,'ORGANIZED NICELY AND GOOD SERVICE')),
+3,'LUXUARY HOTEL OF KANPUR',10);
+
+
+UPDATE accomodation SET address = 
+(select ref(a) FROM addresses a
+WHERE a.street='KANPUR ROAD')
+WHERE accomodation_id =1;
+
+
+
+
+
+
+
+
+
+
+
+

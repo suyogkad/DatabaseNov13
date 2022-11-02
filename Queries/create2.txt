@@ -1,0 +1,73 @@
+
+
+
+CREATE TYPE followUp_type AS OBJECT(
+start_time VARCHAR2(50),
+duration VARCHAR2(50),
+start_date DATE);
+/
+
+CREATE TYPE invoice_type AS OBJECT(
+invoice_holder_name VARCHAR2(20),
+amount NUMBER(10,2),
+release_date DATE,
+due_date DATE);
+/
+
+CREATE TABLE retreat (
+retreat_id   NUMBER(6),
+retreat_name VARCHAR2(30) NOT NULL,
+invoice        invoice_type,
+follow_up    followUp_type);
+
+
+CREATE OR REPLACE TYPE address_type AS OBJECT(
+street VARCHAR2(50),
+city VARCHAR2(50),
+country VARCHAR2(50));
+/
+
+
+CREATE TABLE addresses OF address_type;
+
+
+CREATE TABLE settings (
+setting_id        NUMBER(6),
+setting_name        VARCHAR2(30)    NOT NULL,
+address        REF address_type SCOPE IS addresses);
+
+
+
+CREATE TABLE retreat_settings (
+retreat_setting_id        NUMBER(6),
+setting_id        NUMBER(6)    NOT NULL,
+retreat_id        NUMBER(6)    NOT NULL);
+
+
+CREATE TABLE accomodation_style(
+accomodation_style_id        NUMBER(6),
+accomodation_style_name        VARCHAR2(20)    NOT NULL);
+
+
+CREATE OR REPLACE TYPE room_type AS OBJECT(
+room_number    VARCHAR2(4),
+capacity       NUMBER(10),
+description    VARCHAR2(100));
+/
+
+CREATE TYPE room_varray_type AS VARRAY(50) OF room_type;
+/
+
+
+CREATE TABLE accomodation(
+accomodation_id        NUMBER(6),
+accomodation_name    VARCHAR2(50)    NOT NULL,
+room        room_varray_type,
+no_of_room    NUMBER(6),
+description        VARCHAR2(100),
+accomodation_style_id        NUMBER(6)    NOT NULL,
+address        REF address_type SCOPE IS addresses);
+
+CREATE TABLE retreat_accomodation(
+retreat_setting_id    NUMBER(6)    NOT NULL,
+accomodation_id        NUMBER(6)    NOT NULL);
