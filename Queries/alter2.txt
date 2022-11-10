@@ -1,6 +1,4 @@
-
-
-ALTER TABLE retreat
+ALTER TABLE retreats
 ADD CONSTRAINT pk_retreat
 PRIMARY KEY (retreat_id);
 
@@ -12,11 +10,11 @@ ALTER TABLE retreat_settings
 ADD CONSTRAINT pk_retreat_setting
 PRIMARY KEY (retreat_setting_id);
 
-ALTER TABLE accomodation_style
+ALTER TABLE accomodation_styles
 ADD CONSTRAINT pk_accomodation_style
 PRIMARY KEY (accomodation_style_id);
 
-ALTER TABLE accomodation
+ALTER TABLE accomodations
 ADD CONSTRAINT pk_accomodation
 PRIMARY KEY (accomodation_id);
 
@@ -33,21 +31,26 @@ ADD CONSTRAINT fk_rs_setting
 FOREIGN KEY (setting_id)
 REFERENCES settings(setting_id);
 
+ALTER TABLE reviews
+ADD CONSTRAINT fk_s_setting_id
+FOREIGN KEY (retreat_setting_id)
+REFERENCES retreat_settings(retreat_setting_id);
 
 
-ALTER TABLE accomodation
+
+ALTER TABLE accomodations
 ADD CONSTRAINT fk_a_accomodation_style
 FOREIGN KEY (accomodation_style_id)
 REFERENCES accomodation_style(accomodation_style_id);
 
 
-ALTER TABLE retreat_accomodation
+ALTER TABLE retreat_accomodations
 ADD CONSTRAINT fk_ra_retreat_setting_id
 FOREIGN KEY (retreat_setting_id)
 REFERENCES retreat_settings(retreat_setting_id);
 
 
-ALTER TABLE retreat_accomodation
+ALTER TABLE retreat_accomodations
 ADD CONSTRAINT fk_ra_accomodation_style
 FOREIGN KEY (accomodation_id)
 REFERENCES accomodation(accomodation_id);
