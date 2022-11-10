@@ -107,24 +107,24 @@ VALUES(5,50,115);
 
 -- reviews
 INSERT INTO reviews(review_id,description,rating,retreat_setting_id)
-VALUES(1,'such a good gesture','3 stars',1);
+VALUES(1,'such a good gesture',3,1);
 
 INSERT INTO reviews(review_id,description,rating,retreat_setting_id)
-VALUES(2,'loving and enjoyed alot','3 stars',2);
+VALUES(2,'loving and enjoyed alot',4,2);
 
 INSERT INTO reviews(review_id,description,rating,retreat_setting_id)
-VALUES(3,'was nice being here','2 stars',3);
+VALUES(3,'was nice being here',2,3);
 
 INSERT INTO reviews(review_id,description,rating,retreat_setting_id)
-VALUES(4,'was just average','2 stars',4);
+VALUES(4,'was just average',4,4);
 
 INSERT INTO reviews(review_id,description,rating,retreat_setting_id)
-VALUES(5,'didnt enjoy much','1 stars',5);
+VALUES(5,'didnt enjoy much',5,5);
 
 
 -- accomondation style
 
-INSERT INTO accomodation_styles(accomodation_style_id, accomodation_style_name)s
+INSERT INTO accomodation_styles(accomodation_style_id, accomodation_style_name)
 VALUES(10,'LUXUARY');
 
 INSERT INTO accomodation_styles(accomodation_style_id, accomodation_style_name)
@@ -142,7 +142,7 @@ VALUES(14,'RUSTIC');
 
 -- accomodation
 
-INSERT INTO accomodations (accomodation_id,accomodation_name,room,no_of_room,description,accomodation_style_id) 
+INSERT INTO accomodations(accomodation_id,accomodation_name,room,no_of_room,description,accomodation_style_id) 
 VALUES(1,'SOLTI',
 room_varray_type(room_type(101,6,'WELL ORGANIZED'),
 room_type(102,8,'ORGANIZED NICELY'),
@@ -155,6 +155,62 @@ UPDATE accomodations SET address =
 WHERE a.street='KANPUR ROAD')
 WHERE accomodation_id =1;
 
+
+INSERT INTO accomodations(accomodation_id,accomodation_name,room,no_of_room,description,accomodation_style_id) 
+VALUES(2,'MY TREE HOME',
+room_varray_type(room_type(111,4,'GOOD'),
+room_type(112,3,'ORGANIZED NICELY'),
+room_type(113,3,'WELL CLEANED'),
+room_type(114,3,'GOOD ROOM SERVICE')),
+4,'ONE AND ONLY TREE ACCOMODATION IN BIHAR',11);
+
+
+UPDATE accomodations SET address = 
+(select ref(a) FROM addresses a
+WHERE a.street='BIHAR ROAD')
+WHERE accomodation_id =2;
+
+
+INSERT INTO accomodations(accomodation_id,accomodation_name,room,no_of_room,description,accomodation_style_id) 
+VALUES(3,'DWARIKA',
+room_varray_type(room_type(10,4,'GOOD'),
+room_type(12,3,'ORGANIZED NICELY'),
+room_type(11,3,'GOOD ROOM SERVICE')),
+3,'ONE AND ONLY TREE ACCOMODATION IN BIHAR',11);
+
+
+UPDATE accomodations SET address = 
+(select ref(a) FROM addresses a
+WHERE a.street='93 DEVKOTA STREET')
+WHERE accomodation_id =3;
+
+
+INSERT INTO accomodations(accomodation_id,accomodation_name,room,no_of_room,description,accomodation_style_id) 
+VALUES(4,'SNG',
+room_varray_type(room_type(501,2,'WELL ORGANIZED'),
+room_type(502,2,'GOOD SERVICE'),
+room_type(503,2,'GOOD ROOMS')),
+3,'GET GOOD SERVICE HERE',11);
+
+
+UPDATE accomodations SET address = 
+(select ref(a) FROM addresses a
+WHERE a.street='101 NAGARKOT STREET')
+WHERE accomodation_id =4;
+
+
+
+INSERT INTO retreat_accomodations(retreat_setting_id,accomodation_id)
+VALUES(1,1);
+
+INSERT INTO retreat_accomodations(retreat_setting_id,accomodation_id)
+VALUES(2,2);
+
+INSERT INTO retreat_accomodations(retreat_setting_id,accomodation_id)
+VALUES(3,3);
+
+INSERT INTO retreat_accomodations(retreat_setting_id,accomodation_id)
+VALUES(4,4);
 
 
 

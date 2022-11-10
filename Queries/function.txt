@@ -1,0 +1,187 @@
+CREATE OR REPLACE FUNCTION func_invoice_remain
+(dueDate_given retreats.invoice%TYPE)
+RETURN NUMBER IS
+	vn_time NUMBER(3) := FLOOR(MONTHS_BETWEEN(SYSDATE, dueDate_given(2))/ 12);
+	vn_months_remined NUMBER(3);
+BEGIN
+	IF vn_time > 0
+		THEN
+			DBMS_OUTPUT.PUT_LINE('NOT VALID');
+			RETURN 0;
+		ELSE
+			vn_months_remined := MOD(dueDate_given,vn_time)*12;
+	
+	END IF;
+	RETURN vn_months_remined;
+END func_invoice_remain;
+/
+
+
+
+DECLARE 
+   cur_retreat_id retreats.retreat_id %type; 
+   cur_retreat_name retreats.retreat_name%type; 
+   cur_invoice customer.invoice%type; 
+    cur_follow_up customer.follow_up%type; 
+   CURSOR cur_customers is 
+      SELECT retreat_id, retreat_name, invoice, follow_up FROM retreats; 
+BEGIN 
+   OPEN cur_customers; 
+   LOOP 
+   FETCH cur_customers into cur_id, cur_name, cur_addr; 
+      EXIT WHEN c_customers%notfound; 
+      DBMS_OUTPUT.PUT_LINE(cur_retreat_id  || '  ' ||  cur_retreat_name || '  ' ||  cur_invoice|| '  ' ||  cur_follow_up );
+   END LOOP; 
+   CLOSE cur_retreat; 
+END; 
+/
+
+
+
+
+
+DECLARE 
+   cur_retreat_id retreats.retreat_id %type; 
+   cur_retreat_name retreats.retreat_name%type; 
+
+   CURSOR cur_customers is 
+      SELECT retreat_id, retreat_name, invoice, follow_up FROM retreats; 
+BEGIN 
+   OPEN cur_customers; 
+   LOOP 
+   FETCH cur_customers into cur_id, cur_name, cur_addr; 
+      EXIT WHEN cur_customers%notfound; 
+      DBMS_OUTPUT.PUT_LINE(cur_retreat_id  | |  '   '  | |  cur_retreat_name ); 
+   END LOOP; 
+   CLOSE cur_retreat; 
+END; 
+/
+
+
+
+
+
+
+
+/* FUNCTION */
+
+CREATE OR REPLACE FUNCTION func_max_rating
+RETURN VARCHAR IS
+   nameOfMotal VARCHAR2(50); 
+BEGIN
+
+SELECT accomodation_name INTO nameOfMotal
+FROM accomodations a
+WHERE accomodation_id=(SELECT accomodation_id 
+			FROM retreat_accomodations ra
+			WHERE retreat_setting_id=(
+	SELECT (retreat_setting_id) 
+     FROM reviews  r
+     WHERE rating= (SELECT MAX(rating)
+                     FROM reviews rr
+                     WHERE r.rating=rr.rating)));
+END; 
+/
+
+
+
+
+
+CREATE OR REPLACE FUNCTION func_max_rating
+RETURN VARCHAR IS
+   nameOfMotal VARCHAR2(50); 
+BEGIN
+
+SELECT accomodations.accomodation_name INTO nameOfMotal, retreat_accomodations.rating
+FROM accomodations a
+JOIN reviews r
+	ON accomodations.accomodation_id = 
+     WHERE rating= (SELECT MAX(rating)
+                     FROM reviews rr
+                     WHERE r.rating=rr.rating)));
+END; 
+/
+
+
+
+/* FUNCTION DIDN'T RUN */
+
+CREATE OR REPLACE FUNCTION func_total_amount
+RETURN NUMBER IS
+	total_sum NUMBER(5);
+BEGIN
+		SELECT SUM(i.invoice.amount) INTO total_sum
+     FROM reviews i;
+	RETURN total_sum;
+END; 
+/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*  FUNCTION -----------------*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

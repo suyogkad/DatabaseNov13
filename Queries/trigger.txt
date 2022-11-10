@@ -1,0 +1,30 @@
+CREATE OR REPLACE TRIGGER trig_setting_name_ck
+BEFORE INSERT OR UPDATE OF setting_name ON settings
+FOR EACH row
+DECLARE
+    vn_ck_setting_name NUMBER(3);
+BEGIN
+    vn_ck_setting_name:= func_check_string_num(:NEW.setting_name);
+
+    CASE vn_ck_setting_name
+        WHEN 0 THEN DBMS_OUTPUT.PUT_LINE('VALID FIRSTNAME');
+        WHEN 1 THEN RAISE_APPLICATION_ERROR (-20001,'ERROR! INVALID SETTING NAME! NAME CANNOT CONTAIN NUMBERS');
+        ELSE DBMS_OUTPUT.PUT_LINE('SOMETHING WENT WRONG');
+    END CASE;
+
+
+END trig_dob_ck;
+/
+
+
+
+
+/*  TRIGGER CREATED */
+
+CREATE OR REPLACE TRIGGER trig_del_retreat_name
+AFTER DELETE ON retreats
+FOR EACH row
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('YOU DELETED THE RETREAT '||:OLD.retreat_name );
+END trig_del_retreat_name;
+/

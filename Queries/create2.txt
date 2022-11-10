@@ -44,7 +44,7 @@ retreat_id        NUMBER(6)    NOT NULL);
 CREATE TABLE reviews(
 review_id                       NUMBER(6),
 description              VARCHAR2(30)    NOT NULL,
-rating                   VARCHAR2(30)    NOT NULL,
+rating                   NUMBER(30)    NOT NULL,
 retreat_setting_id       NUMBER(6));
 
 CREATE TABLE accomodation_styles(
