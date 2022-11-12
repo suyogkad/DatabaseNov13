@@ -233,6 +233,79 @@ SET SERVEROUTPUT ON;
 
 
 
+/* run */
+CREATE OR REPLACE FUNCTION func_avg_rating RETURN NUMBER IS
+vn_number_average NUMBER(5);
+BEGIN 
+    SELECT AVG(rating)
+    INTO vn_number_average
+    FROM reviews;
+RETURN vn_number_average;
+END func_avg_rating;
+/
+SHOW ERRORS;
+
+
+
+/* FUNCTION */
+
+CREATE OR REPLACE FUNCTION func_max_rating
+RETURN VARCHAR IS
+   nameOfMotal VARCHAR2(50); 
+BEGIN
+
+SELECT accomodation_name INTO nameOfMotal
+FROM accomodations a
+WHERE accomodation_id=(SELECT accomodation_id 
+			FROM retreat_accomodations ra
+			WHERE retreat_setting_id=(
+	SELECT (retreat_setting_id) 
+     FROM reviews  r
+     WHERE rating= (SELECT MAX(rating)
+                     FROM reviews rr
+                     WHERE r.rating=rr.rating)));
+END; 
+/
+
+
+
+
+
+/* FUNCTION RUN */
+
+CREATE OR REPLACE FUNCTION func_total_amount
+RETURN NUMBER IS
+	total_sum NUMBER(5);
+BEGIN
+		SELECT SUM(i.invoice.amount) INTO total_sum
+     FROM retreats i;
+	RETURN total_sum;
+END; 
+/
+
+
+/* Run */
+
+CREATE FUNCTION func_number_ho(p_string IN VARCHAR2)
+   RETURN INT
+IS
+   v_new_num NUMBER;
+BEGIN
+   v_new_num := TO_NUMBER(p_string);
+   RETURN 1;
+EXCEPTION
+WHEN VALUE_ERROR THEN
+   RETURN 0;
+END func_number_ho;
+
+
+/*  FUNCTION -----------------*/
+
+
+
+
+
+
 
 --PROCEDURES
 
@@ -277,6 +350,68 @@ SHOW ERRORS
 
 
 /* PROCEDURE CREATED WITH CURSOR USED */
+
+
+/* procedure to add the retreats */
+
+CREATE OR REPLACE PROCEDURE proc_add_retreat 
+IS
+V_RETREATID NUMBER(6);
+V_NAME VARCHAR2(30);
+V_INVOICE invoice_type;
+V_FOLLOWUP followUp_type;
+
+BEGIN
+V_RETREATID := 100;
+V_NAME := 'TESTING';
+V_INVOICE := invoice_type('Simakant',400.00,TO_DATE('2022-12-09','YYYY-MM-DD'),TO_DATE('2022-12-09','YYYY-MM-DD'));
+V_FOLLOWUP := followUp_type('6:30','10 minutes',TO_DATE('2022-10-06','YYYY-MM-DD'));
+
+INSERT INTO retreats VALUES(V_RETREATID,V_NAME,V_INVOICE,V_FOLLOWUP);
+
+COMMIT;
+
+DBMS_OUTPUT.PUT_LINE('DATA INSERTED SUCCESSFULLY');
+END proc_add_retreat;
+/
+
+
+
+/* procedure to list down all the retreat name with for loop */
+
+CREATE OR REPLACE PROCEDURE proc_retreat_name
+IS r_name retreats.retreat_name%TYPE;
+BEGIN
+FOR c IN(SELECT retreat_name INTO r_name FROM retreats)
+LOOP
+r_name:=c.retreat_name;
+DBMS_OUTPUT.PUT_LINE(r_name);
+END LOOP;
+END proc_retreat_name;
+/
+
+
+
+/* --IMPLICIT CURSOR USED  run*/
+
+CREATE OR REPLACE PROCEDURE proc_cur_del_address(in_city VARCHAR2) IS
+BEGIN
+    DELETE FROM addresses WHERE city= in_city;
+    IF SQL%FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('CITY ||"in_city"||  WAS DELETED!');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('CITY NOT FOUND!');
+    END IF;
+END proc_cur_del_address;
+/
+SHOW ERRORS
+
+
+
+
+
+/* --IMPLICIT CURSOR USED run*/
+
 CREATE OR REPLACE PROCEDURE check_rating(in_rating NUMBER) IS
     CURSOR cur_reviews IS
     SELECT rating
@@ -299,13 +434,30 @@ EXCEPTION
     DBMS_OUTPUT.PUT_LINE(SQLERRM);
 END check_rating;
 /
-SHOW ERRORS
 
 
 
+/*........CURSOR-------------------------------------------------------------*/
+DECLARE 
+   cur_retreat_id retreats.retreat_id %type; 
+   cur_retreat_name retreats.retreat_name%type; 
+
+   CURSOR cur_retreats is 
+      SELECT retreat_id, retreat_name FROM retreats; 
+BEGIN 
+   OPEN cur_retreats; 
+   LOOP 
+   FETCH cur_retreats into cur_retreat_id, cur_retreat_name; 
+      EXIT WHEN cur_retreats%notfound; 
+     DBMS_OUTPUT.PUT_LINE(cur_retreat_id  ||  '  '  ||  cur_retreat_name);
+   END LOOP; 
+   CLOSE cur_retreats; 
+END; 
+/
 
 
 --trigger
+
 --if setting name include number it shows error
 CREATE OR REPLACE TRIGGER trig_setting_name_ck
 BEFORE INSERT OR UPDATE OF setting_name ON settings
@@ -314,6 +466,30 @@ DECLARE
     vn_ck_setting_name NUMBER(3);
 BEGIN
     vn_ck_setting_name:= func_check_string_num(:NEW.setting_name);
+
+    CASE vn_ck_setting_name
+        WHEN 0 THEN DBMS_OUTPUT.PUT_LINE('VALID FIRSTNAME');
+        WHEN 1 THEN RAISE_APPLICATION_ERROR (-20001,'INVALID SETTING NAME! NAME CANNOT CONTAIN NUMBERS');
+        ELSE DBMS_OUTPUT.PUT_LINE('Not going good theres something wrong');
+    END CASE;
+
+
+END trig_dob_ck;
+/
+
+
+
+
+/*  TRIGGER CREATED */
+
+/* RUN */
+CREATE OR REPLACE TRIGGER trig_setting_name_ck
+BEFORE INSERT OR UPDATE OF setting_name ON settings
+FOR EACH row
+DECLARE
+    vn_ck_setting_name NUMBER(3);
+BEGIN
+    vn_ck_setting_name:= func_number_ho(:NEW.setting_name);
 
     CASE vn_ck_setting_name
         WHEN 0 THEN DBMS_OUTPUT.PUT_LINE('VALID FIRSTNAME');
@@ -329,7 +505,6 @@ END trig_dob_ck;
 
 
 /*  TRIGGER CREATED */
---while deleting the retreat it shows the message
 
 CREATE OR REPLACE TRIGGER trig_del_retreat_name
 AFTER DELETE ON retreats
@@ -337,6 +512,31 @@ FOR EACH row
 BEGIN
     DBMS_OUTPUT.PUT_LINE('YOU DELETED THE RETREAT '||:OLD.retreat_name );
 END trig_del_retreat_name;
+/
+
+
+
+
+CREATE OR REPLACE TRIGGER prevent_duplicate_res_insert
+BEFORE INSERT
+ON accomodations
+FOR EACH ROW
+DECLARE
+    CURSOR accomodation_cursor IS
+    SELECT accomodation_id, accomodation_name, room, no_of_room, description, accomodation_style_id, address
+    FROM accomodations;
+    accomodation_row accomodation_cursor%rowtype;
+BEGIN
+    FOR accomodation_row IN accomodation_cursor
+    LOOP
+        IF :new.accomodation_id = accomodation_row.accomodation_id 
+            and :new.accomodation_name = accomodation_row.accomodation_name
+            and :new.accomodation_style_id = accomodation_row.accomodation_style_id THEN
+
+            raise_application_error(-20000, 'cannot create duplicate version of accomodation');
+        END IF;
+    END LOOP;
+END;
 /
 
 
@@ -583,8 +783,16 @@ SELECT retreat_setting_id,accomodation_id FROM retreat_accomodations;
 
 --QUERY AND TESTING
 
---DROP
 
+
+
+
+
+
+
+
+
+--DROP
 
 --TRIGGERS
 DROP TRIGGER trig_setting_name_ck;

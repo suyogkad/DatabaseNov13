@@ -1,65 +1,16 @@
-CREATE OR REPLACE FUNCTION func_invoice_remain
-(dueDate_given retreats.invoice%TYPE)
-RETURN NUMBER IS
-	vn_time NUMBER(3) := FLOOR(MONTHS_BETWEEN(SYSDATE, dueDate_given(2))/ 12);
-	vn_months_remined NUMBER(3);
-BEGIN
-	IF vn_time > 0
-		THEN
-			DBMS_OUTPUT.PUT_LINE('NOT VALID');
-			RETURN 0;
-		ELSE
-			vn_months_remined := MOD(dueDate_given,vn_time)*12;
-	
-	END IF;
-	RETURN vn_months_remined;
-END func_invoice_remain;
-/
 
 
-
-DECLARE 
-   cur_retreat_id retreats.retreat_id %type; 
-   cur_retreat_name retreats.retreat_name%type; 
-   cur_invoice customer.invoice%type; 
-    cur_follow_up customer.follow_up%type; 
-   CURSOR cur_customers is 
-      SELECT retreat_id, retreat_name, invoice, follow_up FROM retreats; 
+/* run */
+CREATE OR REPLACE FUNCTION func_avg_rating RETURN NUMBER IS
+vn_number_average NUMBER(5);
 BEGIN 
-   OPEN cur_customers; 
-   LOOP 
-   FETCH cur_customers into cur_id, cur_name, cur_addr; 
-      EXIT WHEN c_customers%notfound; 
-      DBMS_OUTPUT.PUT_LINE(cur_retreat_id  || '  ' ||  cur_retreat_name || '  ' ||  cur_invoice|| '  ' ||  cur_follow_up );
-   END LOOP; 
-   CLOSE cur_retreat; 
-END; 
+    SELECT AVG(rating)
+    INTO vn_number_average
+    FROM reviews;
+RETURN vn_number_average;
+END func_avg_rating;
 /
-
-
-
-
-
-DECLARE 
-   cur_retreat_id retreats.retreat_id %type; 
-   cur_retreat_name retreats.retreat_name%type; 
-
-   CURSOR cur_customers is 
-      SELECT retreat_id, retreat_name, invoice, follow_up FROM retreats; 
-BEGIN 
-   OPEN cur_customers; 
-   LOOP 
-   FETCH cur_customers into cur_id, cur_name, cur_addr; 
-      EXIT WHEN cur_customers%notfound; 
-      DBMS_OUTPUT.PUT_LINE(cur_retreat_id  | |  '   '  | |  cur_retreat_name ); 
-   END LOOP; 
-   CLOSE cur_retreat; 
-END; 
-/
-
-
-
-
+SHOW ERRORS;
 
 
 
@@ -87,39 +38,32 @@ END;
 
 
 
-CREATE OR REPLACE FUNCTION func_max_rating
-RETURN VARCHAR IS
-   nameOfMotal VARCHAR2(50); 
-BEGIN
-
-SELECT accomodations.accomodation_name INTO nameOfMotal, retreat_accomodations.rating
-FROM accomodations a
-JOIN reviews r
-	ON accomodations.accomodation_id = 
-     WHERE rating= (SELECT MAX(rating)
-                     FROM reviews rr
-                     WHERE r.rating=rr.rating)));
-END; 
-/
-
-
-
-/* FUNCTION DIDN'T RUN */
+/* FUNCTION RUN */
 
 CREATE OR REPLACE FUNCTION func_total_amount
 RETURN NUMBER IS
 	total_sum NUMBER(5);
 BEGIN
 		SELECT SUM(i.invoice.amount) INTO total_sum
-     FROM reviews i;
+     FROM retreats i;
 	RETURN total_sum;
 END; 
 /
 
 
+/* Run */
 
-
-
+CREATE FUNCTION func_number_ho(p_string IN VARCHAR2)
+   RETURN INT
+IS
+   v_new_num NUMBER;
+BEGIN
+   v_new_num := TO_NUMBER(p_string);
+   RETURN 1;
+EXCEPTION
+WHEN VALUE_ERROR THEN
+   RETURN 0;
+END func_number_ho;
 
 
 

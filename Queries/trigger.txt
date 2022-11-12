@@ -1,10 +1,12 @@
+
+/* RUN */
 CREATE OR REPLACE TRIGGER trig_setting_name_ck
 BEFORE INSERT OR UPDATE OF setting_name ON settings
 FOR EACH row
 DECLARE
     vn_ck_setting_name NUMBER(3);
 BEGIN
-    vn_ck_setting_name:= func_check_string_num(:NEW.setting_name);
+    vn_ck_setting_name:= func_number_ho(:NEW.setting_name);
 
     CASE vn_ck_setting_name
         WHEN 0 THEN DBMS_OUTPUT.PUT_LINE('VALID FIRSTNAME');
@@ -28,3 +30,38 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('YOU DELETED THE RETREAT '||:OLD.retreat_name );
 END trig_del_retreat_name;
 /
+
+
+
+
+CREATE OR REPLACE TRIGGER prevent_duplicate_res_insert
+BEFORE INSERT
+ON accomodations
+FOR EACH ROW
+DECLARE
+    CURSOR accomodation_cursor IS
+    SELECT accomodation_id, accomodation_name, room, no_of_room, description, accomodation_style_id, address
+    FROM accomodations;
+    accomodation_row accomodation_cursor%rowtype;
+BEGIN
+    FOR accomodation_row IN accomodation_cursor
+    LOOP
+        IF :new.accomodation_id = accomodation_row.accomodation_id 
+            and :new.accomodation_name = accomodation_row.accomodation_name
+            and :new.accomodation_style_id = accomodation_row.accomodation_style_id THEN
+
+            raise_application_error(-20000, 'cannot create duplicate version of accomodation');
+        END IF;
+    END LOOP;
+END;
+/
+
+
+
+
+
+
+
+
+
+

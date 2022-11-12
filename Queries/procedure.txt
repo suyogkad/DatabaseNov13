@@ -40,11 +40,25 @@ END proc_retreat_name;
 
 
 
+/* --IMPLICIT CURSOR USED  run*/
+
+CREATE OR REPLACE PROCEDURE proc_cur_del_address(in_city VARCHAR2) IS
+BEGIN
+    DELETE FROM addresses WHERE city= in_city;
+    IF SQL%FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('CITY ||"in_city"||  WAS DELETED!');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('CITY NOT FOUND!');
+    END IF;
+END proc_cur_del_address;
+/
+SHOW ERRORS
 
 
 
 
-/* PROCEDURE CREATED WITH CURSOR USED */
+
+/* --IMPLICIT CURSOR USED run*/
 
 CREATE OR REPLACE PROCEDURE check_rating(in_rating NUMBER) IS
     CURSOR cur_reviews IS
@@ -71,71 +85,23 @@ END check_rating;
 
 
 
+/*........CURSOR-------------------------------------------------------------*/
+DECLARE 
+   cur_retreat_id retreats.retreat_id %type; 
+   cur_retreat_name retreats.retreat_name%type; 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-CREATE OR REPLACE PROCEDURE proc_update_retreat 
-IS
-V_RETREATID NUMBER(6);
-V_NAME VARCHAR2(30);
-V_INVOICE invoice_type;
-V_FOLLOWUP followUp_type;
-
-BEGIN
-V_RETREATID := 100;
-V_NAME := 'TESTING';
-V_INVOICE := invoice_type('Simakant',400.00,TO_DATE('2022-12-09','YYYY-MM-DD'),TO_DATE('2022-12-09','YYYY-MM-DD'));
-V_FOLLOWUP := followUp_type('6:30','10 minutes',TO_DATE('2022-10-06','YYYY-MM-DD'));
-
-INSERT INTO retreats VALUES(V_RETREATID,V_NAME,V_INVOICE,V_FOLLOWUP);
-
-COMMIT;
-
-DBMS_OUTPUT.PUT_LINE('DATA INSERTED SUCCESSFULLY');
-END proc_add_retreat;
+   CURSOR cur_retreats is 
+      SELECT retreat_id, retreat_name FROM retreats; 
+BEGIN 
+   OPEN cur_retreats; 
+   LOOP 
+   FETCH cur_retreats into cur_retreat_id, cur_retreat_name; 
+      EXIT WHEN cur_retreats%notfound; 
+     DBMS_OUTPUT.PUT_LINE(cur_retreat_id  ||  '  '  ||  cur_retreat_name);
+   END LOOP; 
+   CLOSE cur_retreats; 
+END; 
 /
-
-
-
-
-
-
-
-
-
-
-BEGIN
-proc_add_retreat;
-END;
-/
-
-BEGIN
-func_max_rating();
-END;
-/
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
