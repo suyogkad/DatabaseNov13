@@ -1,3 +1,4 @@
+--query to find out the maximum rating from review
 COLUMN review_id HEADING ‘REVIEW’
 COLUMN ROUND(rating) HEADING 'ROUND'
 COLUMN FLOOR(rating) HEADING 'FLOOR'
@@ -10,7 +11,7 @@ WHERE rating = (
 );
 
 
-
+--query to show setting ID where accomodation found in cities of Nepal
 COLUMN settting_id HEADING ‘SettingId’
 COLUMN address.street HEADING 'Street' FORMAT A30
 COLUMN address.city HEADING 'City' FORMAT A20
@@ -25,7 +26,7 @@ WHERE s.address.city IN (
 
 
 
-
+--query to join accomodation and accomodation_styles table and shows accomodation_style_name and description of certain id
 COLUMN accomodation_style_id HEADING ‘AccomodationStyleID'
 COLUMN accomodation_style_name HEADING ‘AccomodationStyleName’
 COLUMN accomodation_description HEADING ‘AccomodationDescription’
@@ -37,8 +38,7 @@ WHERE a.accomodation_style_id=11;
 
 
 
-
-
+--query to join accomodation and accomodation_styles table and shows accomodation_style_name and description
 COLUMN accomodation_style_id HEADING ‘AccomodationStyleID'
 COLUMN accomodation_style_name HEADING ‘AccomodationStyleName’
 COLUMN accomodation_description HEADING ‘AccomodationDescription’
@@ -48,13 +48,14 @@ JOIN accomodations r
 ON a.accomodation_style_id = r.accomodation_style_id;
 
 
-
+--query to show address from address_type with deref format
 COLUMN setting_name HEADING ‘SettingName’
 COLUMN DEREF(address) HEADING 'AddressTYPE’
 SELECT setting_name, DEREF(address) 
 FROM settings;
 
 
+--query to show name and description of certain room id
 COLUMN accomodation_id HEADING ‘AccomodationID'
 COLUMN accomodation_name HEADING ‘AccomodationName’
 COLUMN description HEADING ‘Description’
