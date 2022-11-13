@@ -74,43 +74,6 @@ EXEC check_rating(in_rating NUMBER);
 
 
 
--- didn't run
-
-COLUMN setting_id HEADING ‘SettingID’
-COLUMN address.street HEADING 'Street' FORMAT A30
-COLUMN address.city HEADING 'City' FORMAT A20
-COLUMN address.country HEADING 'Country' FORMAT A15
-COLUMN REF(address_type) HEADING 'AddressType'
-SELECT DEREF(a),setting_id,street,city,country 
-FROM addresses a
-WHERE setting_id IN (
-    SELECT setting_id
-    FROM settings
-    WHERE setting_id = 47
-);
-
-
--- didn't run
-
-COLUMN retreat_setting_id HEADING ‘RetreatSettingId’
-COLUMN retreat_name HEADING ‘RetreatName’
-COLUMN DEREF(invoice) HEADING ‘Invoice’
-SELECT retreat_name,retreat_setting_id,DEREF(invoice)
-FROM retreats
-WHERE retreat_setting_id IN (
-    SELECT retreat_setting_id
-    FROM retreat_settings
-    WHERE retreat_id = 112
-);
-
-
-
-
-
-
-
-
-
 
 
 

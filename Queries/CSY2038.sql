@@ -6,7 +6,7 @@ SAKSHYAM ARYAL-
 SUYOG KADARIYA-
  */
 
-
+--@C:\Users\acer\Desktop\dbpull\DatabaseNov13\Queries\CSY2038.sql
 /* Creating Types*/
 
 CREATE TYPE followUp_type AS OBJECT(
@@ -697,6 +697,75 @@ SELECT retreat_setting_id,accomodation_id FROM retreat_accomodations;
 
 
 --QUERY AND TESTING
+COLUMN review_id HEADING ‘REVIEW’
+COLUMN ROUND(rating) HEADING 'ROUND'
+COLUMN FLOOR(rating) HEADING 'FLOOR'
+COLUMN CEIL(rating) HEADING 'CEIL'
+SELECT review_id, ROUND(rating), FLOOR(rating),CEIL(rating) , rating
+FROM reviews  
+WHERE rating = (
+	SELECT MAX(rating)
+	FROM reviews
+);
+
+
+
+COLUMN settting_id HEADING ‘SettingId’
+COLUMN address.street HEADING 'Street' FORMAT A30
+COLUMN address.city HEADING 'City' FORMAT A20
+COLUMN address.country HEADING 'Country' FORMAT A15
+SELECT s.setting_id,s.address.street, s.address.city, s.address.country
+FROM settings s
+WHERE s.address.city IN (
+	SELECT a.address.city
+	FROM accomodations a
+	WHERE a.address.country = ’NEPAL’
+);
+
+
+
+
+COLUMN accomodation_style_id HEADING ‘AccomodationStyleID'
+COLUMN accomodation_style_name HEADING ‘AccomodationStyleName’
+COLUMN accomodation_description HEADING ‘AccomodationDescription’
+SELECT a.accomodation_style_id,a.accomodation_style_name,r.description
+FROM accomodation_styles a
+JOIN accomodations r
+ON a.accomodation_style_id = r.accomodation_style_id
+WHERE a.accomodation_style_id=11;
+
+
+COLUMN accomodation_style_id HEADING ‘AccomodationStyleID'
+COLUMN accomodation_style_name HEADING ‘AccomodationStyleName’
+COLUMN accomodation_description HEADING ‘AccomodationDescription’
+SELECT a.accomodation_style_id,a.accomodation_style_name,r.description
+FROM accomodation_styles a
+JOIN accomodations r
+ON a.accomodation_style_id = r.accomodation_style_id;
+
+
+
+COLUMN setting_name HEADING ‘SettingName’
+COLUMN DEREF(address) HEADING 'AddressTYPE’
+SELECT setting_name, DEREF(address) 
+FROM settings;
+
+
+COLUMN accomodation_id HEADING ‘AccomodationID'
+COLUMN accomodation_name HEADING ‘AccomodationName’
+COLUMN description HEADING ‘Description’
+COLUMN room_number HEADING ‘RoomNo’
+SELECT a.accomodation_id, a.accomodation_name, a.description, r.room_number, r.description
+FROM accomodations a, TABLE(a.room) r
+WHERE r.room_number = 501;
+
+
+
+EXEC proc_add_retreat ;
+EXEC proc_retreat_name;
+EXEC proc_cur_del_address('JHAPA');
+EXEC check_rating(in_rating NUMBER);
+
 
 --TRIGGER TESTING trig_setting_name_ck
 
@@ -805,10 +874,6 @@ DROP SEQUENCE seq_reviews;
 DROP SEQUENCE seq_accomodation_styles;
 DROP SEQUENCE seq_accomodations;
 DROP SEQUENCE seq_retreat_accomodations;
-
-
---OBJECT TABLE
-DROP TABLE addresses;
 
 --VARRAY TYPE
 DROP TYPE room_varray_type;
