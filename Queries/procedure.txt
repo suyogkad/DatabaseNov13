@@ -1,7 +1,7 @@
 
 
-/* procedure to add the retreats */
-
+/* procedure to insert into the retreats */
+-- variables are declared and then inserted the data into the table
 CREATE OR REPLACE PROCEDURE proc_add_retreat 
 IS
 V_RETREATID NUMBER(6);
@@ -10,7 +10,7 @@ V_INVOICE invoice_type;
 V_FOLLOWUP followUp_type;
 
 BEGIN
-V_RETREATID := 100;
+V_RETREATID := 149;
 V_NAME := 'TESTING';
 V_INVOICE := invoice_type('Simakant',400.00,TO_DATE('2022-12-09','YYYY-MM-DD'),TO_DATE('2022-12-09','YYYY-MM-DD'));
 V_FOLLOWUP := followUp_type('6:30','10 minutes',TO_DATE('2022-10-06','YYYY-MM-DD'));
@@ -18,15 +18,15 @@ V_FOLLOWUP := followUp_type('6:30','10 minutes',TO_DATE('2022-10-06','YYYY-MM-DD
 INSERT INTO retreats VALUES(V_RETREATID,V_NAME,V_INVOICE,V_FOLLOWUP);
 
 COMMIT;
-
 DBMS_OUTPUT.PUT_LINE('DATA INSERTED SUCCESSFULLY');
 END proc_add_retreat;
 /
 
 
 
-/* procedure to list down all the retreat name with for loop */
 
+
+/* procedure to list down all the retreat name with for loop */
 CREATE OR REPLACE PROCEDURE proc_retreat_name
 IS r_name retreats.retreat_name%TYPE;
 BEGIN
@@ -41,9 +41,9 @@ END proc_retreat_name;
 
 
 /* --IMPLICIT CURSOR USED  run*/
-
 CREATE OR REPLACE PROCEDURE proc_cur_del_address(in_city VARCHAR2) IS
 BEGIN
+-- delete query after checking to the city
     DELETE FROM addresses WHERE city= in_city;
     IF SQL%FOUND THEN
         DBMS_OUTPUT.PUT_LINE('CITY ||"in_city"||  WAS DELETED!');
@@ -72,7 +72,7 @@ BEGIN
     IF rec_cur_reviews.rating = in_rating
 
     THEN 
-    DBMS_OUTPUT.PUT_LINE('USER EXISTS');
+    DBMS_OUTPUT.PUT_LINE('RATING EXISTS');
     END IF;
 
 END LOOP;

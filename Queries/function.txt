@@ -1,6 +1,7 @@
 
 
-/* run */
+/* to get the average rating from the accomodations review */
+-- here we have use AVG inbuilt function to get the average
 CREATE OR REPLACE FUNCTION func_avg_rating RETURN NUMBER IS
 vn_number_average NUMBER(5);
 BEGIN 
@@ -14,44 +15,22 @@ SHOW ERRORS;
 
 
 
-/* FUNCTION */
-
-CREATE OR REPLACE FUNCTION func_max_rating
-RETURN VARCHAR IS
-   nameOfMotal VARCHAR2(50); 
-BEGIN
-
-SELECT accomodation_name INTO nameOfMotal
-FROM accomodations a
-WHERE accomodation_id=(SELECT accomodation_id 
-			FROM retreat_accomodations ra
-			WHERE retreat_setting_id=(
-	SELECT (retreat_setting_id) 
-     FROM reviews  r
-     WHERE rating= (SELECT MAX(rating)
-                     FROM reviews rr
-                     WHERE r.rating=rr.rating)));
-END; 
-/
 
 
-
-
-
-/* FUNCTION RUN */
+/* function to get the total sum of the invoice amount */
 
 CREATE OR REPLACE FUNCTION func_total_amount
 RETURN NUMBER IS
 	total_sum NUMBER(5);
 BEGIN
-		SELECT SUM(i.invoice.amount) INTO total_sum
-     FROM retreats i;
+	SELECT SUM(i.invoice.amount) INTO total_sum
+     	FROM retreats i;
 	RETURN total_sum;
 END; 
 /
 
 
-/* Run */
+/* function to convert the string to the number */
 
 CREATE FUNCTION func_number_ho(p_string IN VARCHAR2)
    RETURN INT
@@ -64,7 +43,7 @@ EXCEPTION
 WHEN VALUE_ERROR THEN
    RETURN 0;
 END func_number_ho;
-
+/
 
 
 

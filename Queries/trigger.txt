@@ -1,5 +1,5 @@
 
-/* RUN */
+/* To check if the name of setting contains number and to throw error if the name contains number */
 CREATE OR REPLACE TRIGGER trig_setting_name_ck
 BEFORE INSERT OR UPDATE OF setting_name ON settings
 FOR EACH row
@@ -15,13 +15,13 @@ BEGIN
     END CASE;
 
 
-END trig_dob_ck;
+END trig_setting_name_ck;
 /
 
 
 
 
-/*  TRIGGER CREATED */
+/*  To throw the message that the retreat is deleted after the retreat is deleted */
 
 CREATE OR REPLACE TRIGGER trig_del_retreat_name
 AFTER DELETE ON retreats
@@ -33,14 +33,14 @@ END trig_del_retreat_name;
 
 
 
-
-CREATE OR REPLACE TRIGGER prevent_duplicate_res_insert
+/*To throw message that no duplicate accommodation id, name can be created */
+CREATE OR REPLACE TRIGGER trig_duplicate_no_insert
 BEFORE INSERT
 ON accomodations
 FOR EACH ROW
 DECLARE
     CURSOR accomodation_cursor IS
-    SELECT accomodation_id, accomodation_name, room, no_of_room, description, accomodation_style_id, address
+    SELECT accomodation_id, accomodation_name, accomodation_style_id
     FROM accomodations;
     accomodation_row accomodation_cursor%rowtype;
 BEGIN
